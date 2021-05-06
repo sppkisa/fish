@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block title %}用户管理{% endblock %}
+{% block content %}
+    <div id="users_fill">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                用户管理
+                            </h2>
+                            <hr/>
+                            <div class="panel-heading">
+                                <form class="form-horizontal" method="post" role="form">
+                                    <div class="form-group col-lg-2">
+                                        <label for="firstname" class="col-sm-4 control-label">用户姓名</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                   v-model="search_field.name"
+                                                   placeholder="请输入用户姓名">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="firstname" class="col-sm-4 control-label">用户密码</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="password" name="password"
+                                                   v-model="search_field.password"
+                                                   placeholder="请输入用户密码">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="firstname" class="col-sm-4 control-label">用户类型</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="type" name="type"
+                                                   v-model="search_field.type"
+                                                   placeholder="请输入用户类型">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="firstname" class="col-sm-4 control-label">用户电话</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="phone" name="phone"
+                                                   v-model="search_field.phone"
+                                                   placeholder="请输入用户电话">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="firstname" class="col-sm-4 control-label">用户微信</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="wechat" name="wechat"
+                                                   v-model="search_field.wechat"
+                                                   placeholder="请输入用户微信">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="col-sm-4">
+                                            <button type="button" v-on:click="go_select" class="btn btn-block btn-info">
+                                                查询
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-block btn-turquoise"
+                                                    data-toggle="modal"
+                                                    data-target="#addModal"
+                                                    v-on:click="add">
+                                                添加用户
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <hr/>
+                             <table class="table table-hover" style="margin-bottom:0">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>用户id</th>
+                                    <th>用户姓名</th>
+                                    <th>用户密码</th>
+                                    <th>用户类型</th>
+                                    <th>用户电话</th>
+                                    <th>用户微信</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr v-for="(user,index) in table_content">
+                                    <td>((index+1))</td>
+                                    <td>((user.user_id))</td>
+                                    <td>((user.user_name))</td>
+                                    <td>((user.user_password))</td>
+                                    <td>((user.user_type))</td>
+                                    <td>((user.user_phone))</td>
+                                    <td>((user.user_wechat))</td>
+                                    <td style="width: 30%">
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-block btn-primary" data-switch-color="primary"
+                                                    data-toggle="modal"
+                                                    data-target="#addModal"
+                                                    v-on:click="upd(user.user_id,user.user_name,user.user_password,user.user_type,user.user_phone,user.user_wechat)">
+                                                编辑
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-block btn-danger" data-switch-color="primary"
+                                                    data-toggle="modal"
+                                                    data-target="#delModal"
+                                                    v-on:click="del(user.user_id)">
+                                                删除
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="block" style="margin-top: 20px;text-align: center">
+                                <el-pagination
+                                        background
+                                        @size-change="handleSizeChange"
+                                        @current-change="handleCurrentChange"
+                                        :current-page.sync="currentPage1"
+                                        :page-size="10"
+                                        layout="total, prev, pager, next"
+                                        :total="100">
+                                </el-pagination>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="form-horizontal" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            ((modal_title))
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" v-model="modal_user.id">
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">用户姓名</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="name" id="firstname"
+                                           v-model="modal_user.name"
+                                           placeholder="请输入用户姓名">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="secname" class="col-sm-3 control-label">用户密码</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="password" id="secname"
+                                           v-model="modal_user.password"
+                                           placeholder="请输入用户密码">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">用户类型</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="type" id="firstname"
+                                           v-model="modal_user.type"
+                                           placeholder="请输入用户类型">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">用户电话</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="phone" id="firstname"
+                                           v-model="modal_user.phone"
+                                           placeholder="请输入用户电话">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">用户微信</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="wechat" id="firstname"
+                                           v-model="modal_user.wechat"
+                                           placeholder="请输入用户微信">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer" style="border:0">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="save_user">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+        <div id="delModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        删除用户
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <h4 align="center" style="margin: 0">确定要删除吗？</h4>
+                    </div>
+                    <div class="modal-footer" style="border:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="delete_user"
+                                v-on:click="delete_user">确定
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+   <script type="text/javascript">
+        $(document).ready(function () {
+            let del_id = -1
+
+            $.get('/select_user', function (res) {
+                console.log(res)
+                 v = new Vue({
+                    el: '#users_fill',
+                    data: {
+                        table_content: res, modal_title: '',
+                        search_field: {name: '', type: '', phone: '', wechat: ''},
+                        modal_user: {id: '', name: '', password: '', type: '', phone: '', wechat: ''}
+                    },
+                    delimiters: ['((', '))'],
+                    methods: {
+                        add: function () {
+                            v.modal_title = "添加用户"
+                            v.modal_user.id = ''
+                            v.modal_user.name = ''
+                            v.modal_user.password = ''
+                            v.modal_user.type = ''
+                            v.modal_user.phone = ''
+                            v.modal_user.wechat = ''
+                        },
+                        del: function (id) {
+                            del_id = id
+                        },
+                        {#如果要传递的参数很多的情况下，编辑的模态框中的数据是肯定要先去数据库查一次的，
+                        这里因为参数就三个，都在表格里，就直接拿过来就行#}
+                        upd: function (id, name, password, type, phone, wechat) {
+                            v.modal_title = "编辑用户"
+                            v.modal_user.id = id
+                            v.modal_user.name = name
+                            v.modal_user.password = password
+                            v.modal_user.type = type
+                            v.modal_user.phone = phone
+                            v.modal_user.wechat = wechat
+                        },
+                        go_select: function () {
+                            $.post('/select_user',
+                                {'name': v.search_field.name, 'password': v.search_field.password, 'type': v.search_field.type, 'phone': v.search_field.phone, 'wechat': v.search_field.wechat },
+                                function (res) {
+                                    console.log(res)
+                                    v.table_content = res
+                                })
+                        },
+                        delete_user: function () {
+                            if (del_id !== -1) {
+                                $.post('/delete_user',
+                                    {'id': del_id},
+                                    function (res) {
+                                        console.log(res)
+                                        v.table_content = res
+                                    })
+                            }
+                        },
+                        save_user: function () {
+                            {#无论是修改还是新加，提交表单就行了,后台根据有无Id判断具体操作#}
+                            $.post('/save_user',
+                                {
+                                    'id': v.modal_user.id,
+                                    'name': v.modal_user.name,
+                                    'password': v.modal_user.password,
+                                    'type': v.modal_user.type,
+                                    'phone': v.modal_user.phone,
+                                    'wechat': v.modal_user.wechat
+                                },
+                                function (res) {
+                                    v.table_content = res
+                                })
+                        },
+                        handleSizeChange(val) {
+                            console.log(`每页 ${val} 条`);
+                        },
+                        handleCurrentChange(val) {
+                            console.log(`当前页: ${val}`);
+                        },
+                        data() {
+                            return {
+                                currentPage1: 5,
+                                currentPage2: 5,
+                                currentPage3: 5,
+                                currentPage4: 4
+                            };
+                        }
+
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

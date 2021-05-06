@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block title %}报警记录{% endblock %}
+{% block content %}
+    <div id="alarms_fill">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                报警记录
+                            </h2>
+                            <hr/>
+                            <div class="panel-heading">
+                                <form class="form-horizontal" method="post" role="form">
+                                    <div class="form-group col-lg-2">
+                                        <label for="sensor_type" class="col-sm-4 control-label">传感器类型</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="sensor_type" name="sensor_type"
+                                                   v-model="search_field.sensor_type"
+                                                   placeholder="请输入传感器类型">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="area" class="col-sm-4 control-label">片区名称</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="area" name="area"
+                                                   v-model="search_field.area"
+                                                   placeholder="请输入片区名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="pond_name" class="col-sm-4 control-label">水槽名称</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="pond_name" name="pond_name"
+                                                   v-model="search_field.pond_name"
+                                                   placeholder="请输入水槽名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="alarm_type" class="col-sm-4 control-label">报警类型</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="alarm_type" name="alarm_type"
+                                                   v-model="search_field.alarm_type"
+                                                   placeholder="请输入报警类型">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="col-sm-4">
+                                            <button type="button" v-on:click="go_select" class="btn btn-block btn-info">
+                                                查询
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                            <hr/>
+                             <table class="table table-hover" style="margin-bottom:0">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>报警id</th>
+                                    <th>报警时间</th>
+                                    <th>报警值</th>
+                                    <th>传感器类型</th>
+                                    <th>片区名称</th>
+                                    <th>水槽名称</th>
+                                    <th>报警类型</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr v-for="(alarm,index) in table_content">
+                                    <td>((index+1))</td>
+                                    <td>((alarm.id))</td>
+                                    <td>((alarm.col_time))</td>
+                                    <td>((alarm.col_value))</td>
+                                    <td>((alarm.sensor_type))</td>
+                                    <td>((alarm.area))</td>
+                                    <td>((alarm.pond_name))</td>
+                                    <td>((alarm.alarm_type))</td>
+                                    <td style="width: 30%">
+
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-block btn-danger" data-switch-color="primary"
+                                                    data-toggle="modal"
+                                                    data-target="#delModal"
+                                                    v-on:click="del(alarm.id)">
+                                                删除
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="block" style="margin-top: 20px;text-align: center">
+                                <el-pagination
+                                        background
+                                        @size-change="handleSizeChange"
+                                        @current-change="handleCurrentChange"
+                                        :current-page.sync="currentPage1"
+                                        :page-size="10"
+                                        layout="total, prev, pager, next"
+                                        :total="100">
+                                </el-pagination>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="delModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        删除记录
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <h4 align="center" style="margin: 0">确定要删除吗？</h4>
+                    </div>
+                    <div class="modal-footer" style="border:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="delete_alarm"
+                                v-on:click="delete_alarm">确定
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let del_id = -1
+
+            $.get('/select_alarm', function (res) {
+                console.log(res)
+                 v = new Vue({
+                    el: '#alarms_fill',
+                    data: {
+                        table_content: res, modal_title: '',
+                        search_field: {col_time: '', col_value: '', sensor_type: '', area: '', pond_name: '', alarm_type: ''},
+                        modal_alarm: {id: '', col_time: '', col_value: '', sensor_type: '', area: '', pond_name: '', alarm_type: ''}
+                    },
+                    delimiters: ['((', '))'],
+                    methods: {
+                        del: function (id) {
+                            del_id = id
+                        },
+                        {#如果要传递的参数很多的情况下，编辑的模态框中的数据是肯定要先去数据库查一次的，
+                        这里因为参数就三个，都在表格里，就直接拿过来就行#}
+                        go_select: function () {
+                            $.post('/select_alarm',
+                                {'col_time': v.search_field.col_time, 'col_value': v.search_field.col_value, 'sensor_type': v.search_field.sensor_type, 'area': v.search_field.area, 'pond_name': v.search_field.pond_name, 'alarm_type': v.search_field.alarm_type},
+                                function (res) {
+                                    console.log(res)
+                                    v.table_content = res
+                                })
+                        },
+                        delete_alarm: function () {
+                            if (del_id !== -1) {
+                                $.post('/delete_alarm',
+                                    {'id': del_id},
+                                    function (res) {
+                                        console.log(res)
+                                        v.table_content = res
+                                    })
+                            }
+                        },
+                        save_alarm: function () {
+                            {#无论是修改还是新加，提交表单就行了,后台根据有无Id判断具体操作#}
+                            $.post('/save_alarm',
+                                {
+                                    'id': v.modal_alarm.id,
+                                    'col_time': v.modal_alarm.col_time,
+                                    'col_value': v.modal_alarm.col_value,
+                                    'sensor_type': v.modal_alarm.sensor_type,
+                                    'area': v.modal_alarm.area,
+                                    'pond_name': v.modal_alarm.pond_name,
+                                    'alarm_type': v.modal_alarm.alarm_type
+                                },
+                                function (res) {
+                                    v.table_content = res
+                                })
+                        },
+                        handleSizeChange(val) {
+                            console.log(`每页 ${val} 条`);
+                        },
+                        handleCurrentChange(val) {
+                            console.log(`当前页: ${val}`);
+                        },
+                        data() {
+                            return {
+                                currentPage1: 5,
+                                currentPage2: 5,
+                                currentPage3: 5,
+                                currentPage4: 4
+                            };
+                        }
+
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

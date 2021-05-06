@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block title %}鱼塘管理{% endblock %}
+{% block content %}
+    <div id="ponds_fill">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                水槽管理
+                            </h2>
+                            <hr/>
+                            <div class="panel-heading">
+                                <form class="form-horizontal" method="post" role="form">
+                                    <div class="form-group col-lg-3">
+                                        <label for="firstname" class="col-sm-4 control-label">水槽名称</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                   v-model="search_field.name"
+                                                   placeholder="请输入水槽名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-3">
+                                        <label for="firstname" class="col-sm-4 control-label">鱼的种类</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="type" name="type"
+                                                   v-model="search_field.type"
+                                                   placeholder="请输入鱼的种类">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-3">
+                                        <label for="firstname" class="col-sm-4 control-label">片区名</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="area" name="area"
+                                                   v-model="search_field.area"
+                                                   placeholder="请输入片区名">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="col-sm-3">
+                                            <button type="button" v-on:click="go_select" class="btn btn-block btn-info">
+                                                查询
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="button" class="btn btn-block btn-turquoise"
+                                                    data-toggle="modal"
+                                                    data-target="#addModal"
+                                                    v-on:click="add">
+                                                添加鱼塘
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <hr/>
+                            <div style="height: 60%">
+                                <table class="table table-hover" style="margin-bottom:0">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>鱼塘id</th>
+                                        <th>鱼塘名称</th>
+                                        <th>鱼的种类</th>
+                                        <th>片区名</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr v-for="(pond,index) in table_content">
+                                        <td>((index+1))</td>
+                                        <td>((pond.id))</td>
+                                        <td>((pond.pond_name))</td>
+                                        <td>((pond.fish_type))</td>
+                                        <td>((pond.area_name))</td>
+                                        <td style="width: 30%">
+                                            <div class="col-xs-2">
+                                                <button class="btn btn-block btn-primary" data-switch-color="primary"
+                                                        data-toggle="modal"
+                                                        data-target="#addModal"
+                                                        v-on:click="upd(pond.id,pond.pond_name,pond.fish_type,pond.area_name)">
+                                                    编辑
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <button class="btn btn-block btn-danger" data-switch-color="primary"
+                                                        data-toggle="modal"
+                                                        data-target="#delModal"
+                                                        v-on:click="del(pond.id)">
+                                                    删除
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="block" style="margin-top: 20px;text-align: center">
+                                <el-pagination
+                                        background
+                                        @current-change="handleCurrentChange"
+                                        :page-size="10"
+                                        :current-page=((pager.page))
+                                        layout="total, prev, pager, next"
+                                        :total=((pager.total))>
+                                </el-pagination>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="form-horizontal" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            ((modal_title))
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" v-model="modal_pond.id">
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">水槽名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="name" id="firstname"
+                                           v-model="modal_pond.name"
+                                           placeholder="请输入水槽名称">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="secname" class="col-sm-3 control-label">鱼的种类</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="type" id="secname"
+                                           v-model="modal_pond.type"
+                                           placeholder="请输入鱼的种类">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="firstname" class="col-sm-3 control-label">片区名</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="area" id="firstname"
+                                           v-model="modal_pond.area"
+                                           placeholder="请输入片区名">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer" style="border:0">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="save_pond">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+
+        <div id="delModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        删除鱼塘
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <h4 align="center" style="margin: 0">确定要删除吗？</h4>
+                    </div>
+                    <div class="modal-footer" style="border:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="delete_pond"
+                                v-on:click="delete_pond">确定
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let del_id = -1
+
+            $.get('/select_pond', function (res) {
+                console.log(res)
+                v = new Vue({
+                    el: '#ponds_fill',
+                    data: {
+                        table_content: res.items, modal_title: '',
+                        search_field: {name: '', area: '', type: ''},
+                        modal_pond: {id: '', name: '', area: '', type: ''},
+                        pager: {total: res.total, page: res.page}
+                    },
+                    delimiters: ['((', '))'],
+                    methods: {
+                        add: function () {
+                            v.modal_title = "添加鱼塘"
+                            v.modal_pond.id = ''
+                            v.modal_pond.name = ''
+                            v.modal_pond.area = ''
+                            v.modal_pond.type = ''
+                        },
+                        del: function (id) {
+                            del_id = id
+                        },
+                        {#如果要传递的参数很多的情况下，编辑的模态框中的数据是肯定要先去数据库查一次的，
+                        这里因为参数就三个，都在表格里，就直接拿过来就行#}
+                        upd: function (id, name, type, area) {
+                            v.modal_title = "编辑鱼塘"
+                            v.modal_pond.id = id
+                            v.modal_pond.name = name
+                            v.modal_pond.type = type
+                            v.modal_pond.area = area
+                        },
+                        go_select: function () {
+                            $.post('/select_pond',
+                                {
+                                    'name': v.search_field.name, 'type': v.search_field.type,
+                                    'area': v.search_field.area
+                                },
+                                function (res) {
+                                    v.fillPager(res)
+                                })
+                        },
+                        delete_pond: function () {
+                            if (del_id !== -1) {
+                                $.post('/delete_pond',
+                                    {'id': del_id, 'page' : v.pager.page},
+                                    function (res) {
+                                        v.fillPager(res)
+                                        {#flask好像没有返回值表明添加是否成功，直接返回提示信息#}
+                                        v.$message.success('删除成功！');
+                                    })
+                            }
+                        },
+                        save_pond: function () {
+                            {#无论是修改还是新加，提交表单就行了,后台根据有无Id判断具体操作#}
+                            $.post('/save_pond',
+                                {
+                                    'id': v.modal_pond.id,
+                                    'name': v.modal_pond.name,
+                                    'type': v.modal_pond.type,
+                                    'area': v.modal_pond.area,
+                                    'page': v.pager.page
+                                },
+                                function (res) {
+                                    if (v.modal_title === '添加鱼塘') {
+                                        v.$message.success('插入成功！');
+                                    } else {
+                                        v.$message.success('修改成功！');
+                                    }
+                                    v.fillPager(res)
+                                })
+                        },
+                        handleCurrentChange(curPage) {
+                            $.post('/select_pond',
+                                {
+                                    'name': v.search_field.name, 'type': v.search_field.type,
+                                    'area': v.search_field.area, 'page': curPage
+                                },
+                                function (res) {
+                                    v.fillPager(res)
+                                })
+                        },
+                        fillPager(res) {
+                            v.table_content = res.items
+                            v.pager.page = res.page
+                            v.pager.total = res.total
+                        }
+
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

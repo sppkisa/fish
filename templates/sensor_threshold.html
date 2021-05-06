@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+{% block title %}阈值设置情况{% endblock %}
+{% block content %}
+    <div id="sensor_thresholds_fill">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                阈值设置情况
+                            </h2>
+                            <hr/>
+                            <div class="panel-heading">
+                                <form class="form-horizontal" method="post" role="form">
+                                    <div class="form-group col-lg-3">
+                                        <label for="pond_name" class="col-sm-4 control-label">水槽名称</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="pond_name" name="pond_name"
+                                                   v-model="search_field.pond_name"
+                                                   placeholder="请输入水槽名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-3">
+                                        <label for="area_name" class="col-sm-4 control-label">片区名称</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="area_name" name="area_name"
+                                                   v-model="search_field.area_name"
+                                                   placeholder="请输入片区名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-3">
+                                        <label for="type" class="col-sm-4 control-label">传感器类型</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="type" name="type"
+                                                   v-model="search_field.type"
+                                                   placeholder="请输入传感器类型">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="col-sm-4">
+                                            <button type="button" v-on:click="go_select" class="btn btn-block btn-info">
+                                                查询
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-block btn-turquoise"
+                                                    data-toggle="modal"
+                                                    data-target="#addModal"
+                                                    v-on:click="add">
+                                                添加新阈值
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <hr/>
+
+                                <table class="table table-hover" style="margin-bottom:0">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>阈值id</th>
+                                    <th>传感器类型</th>
+                                    <th>最大值1</th>
+                                    <th>最小值1</th>
+                                    <th>水槽名称</th>
+                                    <th>片区名称</th>
+                                    <th>最大值2</th>
+                                    <th>最小值2</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr v-for="(sensor_threshold,index) in table_content">
+                                    <td>((index+1))</td>
+                                    <td>((sensor_threshold.id))</td>
+                                    <td>((sensor_threshold.type))</td>
+                                    <td>((sensor_threshold.max1))</td>
+                                    <td>((sensor_threshold.min1))</td>
+                                    <td>((sensor_threshold.pond_name))</td>
+                                    <td>((sensor_threshold.area_name))</td>
+                                    <td>((sensor_threshold.max2))</td>
+                                    <td>((sensor_threshold.min2))</td>
+                                    <td style="width: 30%">
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-block btn-primary" data-switch-color="primary"
+                                                    data-toggle="modal"
+                                                    data-target="#addModal"
+                                                    v-on:click="upd(sensor_threshold.id,sensor_threshold.type,sensor_threshold.max1,sensor_threshold.min1,sensor_threshold.pond_name,sensor_threshold.area_name, sensor_threshold.max2,sensor_threshold.min2)">
+                                                编辑
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-block btn-danger" data-switch-color="primary"
+                                                    data-toggle="modal"
+                                                    data-target="#delModal"
+                                                    v-on:click="del(sensor_threshold.id)">
+                                                删除
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+
+                            <div class="block" style="margin-top: 20px;text-align: center">
+                                <el-pagination
+                                        background
+                                        @size-change="handleSizeChange"
+                                        @current-change="handleCurrentChange"
+                                        :current-page.sync="currentPage1"
+                                        :page-size="10"
+                                        layout="total, prev, pager, next"
+                                        :total="100">
+                                </el-pagination>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="form-horizontal" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            ((modal_title))
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" v-model="modal_sensor_threshold.id">
+                            <div class="form-group col-lg-12">
+                                <label for="type" class="col-sm-3 control-label">传感器类型</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="type" id="type"
+                                           v-model="modal_sensor_threshold.type"
+                                           placeholder="请输入传感器类型">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="max1" class="col-sm-3 control-label">最大值1</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="max1" id="max1"
+                                           v-model="modal_sensor_threshold.max1"
+                                           placeholder="请输入最大值1">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="min1" class="col-sm-3 control-label">最小值1</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="min1" id="min1"
+                                           v-model="modal_sensor_threshold.min1"
+                                           placeholder="请输入最小值1">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="pond_name" class="col-sm-3 control-label">水槽名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="pond_name" id="pond_name"
+                                           v-model="modal_sensor_threshold.pond_name"
+                                           placeholder="请输入水槽名称">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="area_name" class="col-sm-3 control-label">片区名称</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="area_name" id="area_name"
+                                           v-model="modal_sensor_threshold.area_name"
+                                           placeholder="请输入片区名称">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="max2" class="col-sm-3 control-label">最大值2</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="max2" id="max2"
+                                           v-model="modal_sensor_threshold.max2"
+                                           placeholder="请输入最大值2">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label for="min2" class="col-sm-3 control-label">最小值2</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="min2" id="min2"
+                                           v-model="modal_sensor_threshold.min2"
+                                           placeholder="请输入最小值2">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer" style="border:0">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="save_sensor_threshold">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+        <div id="delModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        删除阈值
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <h4 align="center" style="margin: 0">确定要删除吗？</h4>
+                    </div>
+                    <div class="modal-footer" style="border:0">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="delete_sensor_threshold"
+                                v-on:click="delete_sensor_threshold">确定
+                        </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let del_id = -1
+
+            $.get('/select_sensor_threshold', function (res) {
+                console.log(res)
+                 v = new Vue({
+                    el: '#sensor_thresholds_fill',
+                    data: {
+                        table_content: res, modal_title: '',
+                        search_field: {type: '', max1: '', min1: '', pond_name: '', area_name: '', max2: '', min2: ''},
+                        modal_sensor_threshold: {id: '', type: '', max1: '', min1: '', pond_name: '', area_name: '', max2: '', min2: ''}
+                    },
+                    delimiters: ['((', '))'],
+                    methods: {
+                        add: function () {
+                            v.modal_title = "添加阈值"
+                            v.modal_sensor_threshold.id = ''
+                            v.modal_sensor_threshold.type = ''
+                            v.modal_sensor_threshold.max1 = ''
+                            v.modal_sensor_threshold.min1 = ''
+                            v.modal_sensor_threshold.pond_name = ''
+                            v.modal_sensor_threshold.area_name = ''
+                            v.modal_sensor_threshold.max2 = ''
+                            v.modal_sensor_threshold.min2 = ''
+                        },
+                        del: function (id) {
+                            del_id = id
+                        },
+                        {#如果要传递的参数很多的情况下，编辑的模态框中的数据是肯定要先去数据库查一次的，
+                        这里因为参数就三个，都在表格里，就直接拿过来就行#}
+                        upd: function (id, type, max1, min1, pond_name, area_name, max2, min2) {
+                            v.modal_title = "编辑阈值"
+                            v.modal_sensor_threshold.id = id
+                            v.modal_sensor_threshold.type = type
+                            v.modal_sensor_threshold.max1 = max1
+                            v.modal_sensor_threshold.min1 = min1
+                            v.modal_sensor_threshold.pond_name = pond_name
+                            v.modal_sensor_threshold.area_name = area_name
+                            v.modal_sensor_threshold.max2 = max2
+                            v.modal_sensor_threshold.min2 = min2
+                        },
+                        go_select: function () {
+                            $.post('/select_sensor_threshold',
+                                {'type': v.search_field.type, 'max1': v.search_field.max1, 'min1': v.search_field.min1, 'pond_name': v.search_field.pond_name, 'area_name': v.search_field.area_name, 'max2': v.search_field.max2, 'min2': v.search_field.min2 },
+                                function (res) {
+                                    console.log(res)
+                                    v.table_content = res
+                                })
+                        },
+                        delete_sensor_threshold: function () {
+                            if (del_id !== -1) {
+                                $.post('/delete_sensor_threshold',
+                                    {'id': del_id},
+                                    function (res) {
+                                        console.log(res)
+                                        v.table_content = res
+                                    })
+                            }
+                        },
+                        save_sensor_threshold: function () {
+                            {#无论是修改还是新加，提交表单就行了,后台根据有无Id判断具体操作#}
+                            $.post('/save_sensor_threshold',
+                                {
+                                    'id': v.modal_sensor_threshold.id,
+                                    'type': v.modal_sensor_threshold.type,
+                                    'max1': v.modal_sensor_threshold.max1,
+                                    'min1': v.modal_sensor_threshold.min1,
+                                    'pond_name': v.modal_sensor_threshold.pond_name,
+                                    'area_name': v.modal_sensor_threshold.area_name,
+                                    'max2': v.modal_sensor_threshold.max2,
+                                    'min2': v.modal_sensor_threshold.min2,
+                                },
+                                function (res) {
+                                    v.table_content = res
+                                })
+                        },
+                        handleSizeChange(val) {
+                            console.log(`每页 ${val} 条`);
+                        },
+                        handleCurrentChange(val) {
+                            console.log(`当前页: ${val}`);
+                        },
+                        data() {
+                            return {
+                                currentPage1: 5,
+                                currentPage2: 5,
+                                currentPage3: 5,
+                                currentPage4: 4
+                            };
+                        }
+
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}
