@@ -14,6 +14,10 @@ def go_user():
 
 @user.route('/save_user', methods=['POST'])
 def save_user():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     id = request.form.get('id')
     name = request.form.get('name')
     password = request.form.get('password')
@@ -27,12 +31,16 @@ def save_user():
     else:
         user = User(name, password, type, phone, wechat)
         add(user)
-    users = User.query.all()
+    users = User.query.paginate(page=page, per_page=10)
     return toJson(users)
 
 
 @user.route('/select_user', methods=['GET', 'POST'])
 def select_user():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     name = request.values.get('name')
     password = request.values.get('password')
     type = request.values.get('type')
@@ -50,22 +58,27 @@ def select_user():
         query = query.filter(and_(User.user_phone.like('%{phone}%'.format(phone=phone))))
     if wechat:
         query = query.filter(and_(User.user_wechat.like('%{wechat}%'.format(wechat=wechat))))
-    # 重新查表
-    users = query.all()
+    # 重新查表分页
+    users = query.paginate(page=page, per_page=10)
     return toJson(users)
 
 
 @user.route('/delete_user', methods=['POST'])
 def delete_user():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     user_id = request.values.get('id')
     obj = User.query.filter(User.user_id == user_id).first()
     delete(obj)
-    users = User.query.all()
+    users = User.query.paginate(page=page, per_page=10)
     return toJson(users)
 
 
 def toJson(users):
     res = []
-    for user in users:
+    for user in users.items:
         res.append(user.serialize1())
-    return jsonify(res)
+    ret = {'items': res, 'page': users.page, 'total': users.total}
+    return jsonify(ret)

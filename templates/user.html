@@ -119,12 +119,11 @@
                             <div class="block" style="margin-top: 20px;text-align: center">
                                 <el-pagination
                                         background
-                                        @size-change="handleSizeChange"
                                         @current-change="handleCurrentChange"
-                                        :current-page.sync="currentPage1"
                                         :page-size="10"
+                                        :current-page=((pager.page))
                                         layout="total, prev, pager, next"
-                                        :total="100">
+                                        :total=((pager.total))>
                                 </el-pagination>
                             </div>
                         </div>
@@ -232,9 +231,10 @@
                  v = new Vue({
                     el: '#users_fill',
                     data: {
-                        table_content: res, modal_title: '',
+                        table_content: res.items, modal_title: '',
                         search_field: {name: '', type: '', phone: '', wechat: ''},
-                        modal_user: {id: '', name: '', password: '', type: '', phone: '', wechat: ''}
+                        modal_user: {id: '', name: '', password: '', type: '', phone: '', wechat: ''},
+                        pager: {total: res.total, page: res.page}
                     },
                     delimiters: ['((', '))'],
                     methods: {
@@ -265,17 +265,16 @@
                             $.post('/select_user',
                                 {'name': v.search_field.name, 'password': v.search_field.password, 'type': v.search_field.type, 'phone': v.search_field.phone, 'wechat': v.search_field.wechat },
                                 function (res) {
-                                    console.log(res)
-                                    v.table_content = res
+                                    v.fillPager(res)
                                 })
                         },
                         delete_user: function () {
                             if (del_id !== -1) {
                                 $.post('/delete_user',
-                                    {'id': del_id},
+                                    {'id': del_id, 'page' : v.pager.page},
                                     function (res) {
-                                        console.log(res)
-                                        v.table_content = res
+                                        v.fillPager(res)
+                                        v.$message.success('删除成功！');
                                     })
                             }
                         },
@@ -288,25 +287,33 @@
                                     'password': v.modal_user.password,
                                     'type': v.modal_user.type,
                                     'phone': v.modal_user.phone,
-                                    'wechat': v.modal_user.wechat
+                                    'wechat': v.modal_user.wechat,
+                                    'page': v.pager.page
                                 },
                                 function (res) {
-                                    v.table_content = res
+                                    if (v.modal_title === '添加用户') {
+                                        v.$message.success('插入成功！');
+                                    } else {
+                                        v.$message.success('修改成功！');
+                                    }
+                                    v.fillPager(res)
                                 })
                         },
-                        handleSizeChange(val) {
-                            console.log(`每页 ${val} 条`);
+
+                        handleCurrentChange(curPage) {
+                            $.post('/select_user',
+                                {
+                                    'name': v.search_field.name, 'password': v.search_field.password,
+                                    'type': v.search_field.type, 'phone': v.search_field.phone, 'wechat': v.search_field.wechat, 'page': curPage
+                                },
+                                function (res) {
+                                    v.fillPager(res)
+                                })
                         },
-                        handleCurrentChange(val) {
-                            console.log(`当前页: ${val}`);
-                        },
-                        data() {
-                            return {
-                                currentPage1: 5,
-                                currentPage2: 5,
-                                currentPage3: 5,
-                                currentPage4: 4
-                            };
+                        fillPager(res) {
+                            v.table_content = res.items
+                            v.pager.page = res.page
+                            v.pager.total = res.total
                         }
 
                     }

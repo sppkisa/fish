@@ -13,6 +13,10 @@ def go_alarm():
 
 @alarm.route('/save_alarm', methods=['POST'])
 def save_alarm():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     id = request.form.get('id')
     col_time = request.form.get('col_time')
     col_value = request.form.get('col_value')
@@ -27,12 +31,16 @@ def save_alarm():
     else:
         alarm = Alarm(col_time, col_value, sensor_type, area, pond_name, alarm_type)
         add(alarm)
-    alarms = Alarm.query.all()
+    alarms = Alarm.query.paginate(page=page, per_page=10)
     return toJson(alarms)
 
 
 @alarm.route('/select_alarm', methods=['GET', 'POST'])
 def select_alarm():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     col_time = request.values.get('col_time')
     col_value = request.values.get('col_value')
     sensor_type = request.values.get('sensor_type')
@@ -54,21 +62,26 @@ def select_alarm():
     if alarm_type:
         query = query.filter(and_(Alarm.alarm_type.like('%{alarm_type}%'.format(alarm_type=alarm_type))))
     # 重新查表
-    alarms = query.all()
+    alarms = query.paginate(page=page, per_page=10)
     return toJson(alarms)
 
 
 @alarm.route('/delete_alarm', methods=['POST'])
 def delete_alarm():
+    page = 1
+    # 接收页码
+    if request.values.get('page'):
+        page = int(request.values.get('page'))
     id = request.values.get('id')
     obj = Alarm.query.filter(Alarm.id == id).first()
     delete(obj)
-    alarms = Alarm.query.all()
+    alarms = Alarm.query.paginate(page=page, per_page=10)
     return toJson(alarms)
 
 
 def toJson(alarms):
     res = []
-    for alarm in alarms:
+    for alarm in alarms.items:
         res.append(alarm.serialize())
-    return jsonify(res)
+    ret = {'items': res, 'page': alarms.page, 'total': alarms.total}
+    return jsonify(ret)

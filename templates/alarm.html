@@ -98,12 +98,11 @@
                             <div class="block" style="margin-top: 20px;text-align: center">
                                 <el-pagination
                                         background
-                                        @size-change="handleSizeChange"
                                         @current-change="handleCurrentChange"
-                                        :current-page.sync="currentPage1"
                                         :page-size="10"
+                                        :current-page=((pager.page))
                                         layout="total, prev, pager, next"
-                                        :total="100">
+                                        :total=((pager.total))>
                                 </el-pagination>
                             </div>
                         </div>
@@ -147,9 +146,10 @@
                  v = new Vue({
                     el: '#alarms_fill',
                     data: {
-                        table_content: res, modal_title: '',
+                        table_content: res.items, modal_title: '',
                         search_field: {col_time: '', col_value: '', sensor_type: '', area: '', pond_name: '', alarm_type: ''},
-                        modal_alarm: {id: '', col_time: '', col_value: '', sensor_type: '', area: '', pond_name: '', alarm_type: ''}
+                        modal_alarm: {id: '', col_time: '', col_value: '', sensor_type: '', area: '', pond_name: '', alarm_type: ''},
+                        pager: {total: res.total, page: res.page}
                     },
                     delimiters: ['((', '))'],
                     methods: {
@@ -162,17 +162,17 @@
                             $.post('/select_alarm',
                                 {'col_time': v.search_field.col_time, 'col_value': v.search_field.col_value, 'sensor_type': v.search_field.sensor_type, 'area': v.search_field.area, 'pond_name': v.search_field.pond_name, 'alarm_type': v.search_field.alarm_type},
                                 function (res) {
-                                    console.log(res)
-                                    v.table_content = res
+                                    v.fillPager(res)
                                 })
                         },
                         delete_alarm: function () {
                             if (del_id !== -1) {
                                 $.post('/delete_alarm',
-                                    {'id': del_id},
+                                    {'id': del_id, 'page' : v.pager.page},
                                     function (res) {
-                                        console.log(res)
-                                        v.table_content = res
+                                        v.fillPager(res)
+                                        {#flask好像没有返回值表明添加是否成功，直接返回提示信息#}
+                                        v.$message.success('删除成功！');
                                     })
                             }
                         },
@@ -186,25 +186,27 @@
                                     'sensor_type': v.modal_alarm.sensor_type,
                                     'area': v.modal_alarm.area,
                                     'pond_name': v.modal_alarm.pond_name,
-                                    'alarm_type': v.modal_alarm.alarm_type
+                                    'alarm_type': v.modal_alarm.alarm_type,
+                                    'page': v.pager.page
                                 },
                                 function (res) {
                                     v.table_content = res
                                 })
                         },
-                        handleSizeChange(val) {
-                            console.log(`每页 ${val} 条`);
+                        handleCurrentChange(curPage) {
+                            $.post('/select_alarm',
+                                {
+                                    'col_time': v.search_field.col_time, 'col_value': v.search_field.col_value,
+                                    'sensor_type': v.search_field.sensor_type, 'area': v.modal_alarm.area,'pond_name': v.modal_alarm.pond_name,'alarm_type': v.modal_alarm.alarm_type,'page': curPage
+                                },
+                                function (res) {
+                                    v.fillPager(res)
+                                })
                         },
-                        handleCurrentChange(val) {
-                            console.log(`当前页: ${val}`);
-                        },
-                        data() {
-                            return {
-                                currentPage1: 5,
-                                currentPage2: 5,
-                                currentPage3: 5,
-                                currentPage4: 4
-                            };
+                        fillPager(res) {
+                            v.table_content = res.items
+                            v.pager.page = res.page
+                            v.pager.total = res.total
                         }
 
                     }

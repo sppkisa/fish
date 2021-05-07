@@ -110,12 +110,11 @@
                             <div class="block" style="margin-top: 20px;text-align: center">
                                 <el-pagination
                                         background
-                                        @size-change="handleSizeChange"
                                         @current-change="handleCurrentChange"
-                                        :current-page.sync="currentPage1"
                                         :page-size="10"
+                                        :current-page=((pager.page))
                                         layout="total, prev, pager, next"
-                                        :total="100">
+                                        :total=((pager.total))>
                                 </el-pagination>
                             </div>
                         </div>
@@ -239,9 +238,10 @@
                  v = new Vue({
                     el: '#sensor_thresholds_fill',
                     data: {
-                        table_content: res, modal_title: '',
+                        table_content: res.items, modal_title: '',
                         search_field: {type: '', max1: '', min1: '', pond_name: '', area_name: '', max2: '', min2: ''},
-                        modal_sensor_threshold: {id: '', type: '', max1: '', min1: '', pond_name: '', area_name: '', max2: '', min2: ''}
+                        modal_sensor_threshold: {id: '', type: '', max1: '', min1: '', pond_name: '', area_name: '', max2: '', min2: ''},
+                        pager: {total: res.total, page: res.page}
                     },
                     delimiters: ['((', '))'],
                     methods: {
@@ -276,17 +276,17 @@
                             $.post('/select_sensor_threshold',
                                 {'type': v.search_field.type, 'max1': v.search_field.max1, 'min1': v.search_field.min1, 'pond_name': v.search_field.pond_name, 'area_name': v.search_field.area_name, 'max2': v.search_field.max2, 'min2': v.search_field.min2 },
                                 function (res) {
-                                    console.log(res)
-                                    v.table_content = res
+                                    v.fillPager(res)
                                 })
                         },
                         delete_sensor_threshold: function () {
                             if (del_id !== -1) {
                                 $.post('/delete_sensor_threshold',
-                                    {'id': del_id},
+                                    {'id': del_id, 'page' : v.pager.page},
                                     function (res) {
-                                        console.log(res)
-                                        v.table_content = res
+                                        v.fillPager(res)
+                                        {#flask好像没有返回值表明添加是否成功，直接返回提示信息#}
+                                        v.$message.success('删除成功！');
                                     })
                             }
                         },
@@ -302,24 +302,31 @@
                                     'area_name': v.modal_sensor_threshold.area_name,
                                     'max2': v.modal_sensor_threshold.max2,
                                     'min2': v.modal_sensor_threshold.min2,
+                                    'page': v.pager.page
                                 },
                                 function (res) {
-                                    v.table_content = res
+                                    if (v.modal_title === '添加鱼塘') {
+                                        v.$message.success('插入成功！');
+                                    } else {
+                                        v.$message.success('修改成功！');
+                                    }
+                                    v.fillPager(res)
                                 })
                         },
-                        handleSizeChange(val) {
-                            console.log(`每页 ${val} 条`);
+                        handleCurrentChange(curPage) {
+                            $.post('/select_sensor_threshold',
+                                {
+                                    'type': v.search_field.type, 'max1': v.search_field.max1,
+                                    'min1': v.search_field.min1, 'pond_name': v.search_field.pond_name,'area_name': v.search_field.area_name,'max2': v.search_field.max2,'min2': v.search_field.min2,'page': curPage
+                                },
+                                function (res) {
+                                    v.fillPager(res)
+                                })
                         },
-                        handleCurrentChange(val) {
-                            console.log(`当前页: ${val}`);
-                        },
-                        data() {
-                            return {
-                                currentPage1: 5,
-                                currentPage2: 5,
-                                currentPage3: 5,
-                                currentPage4: 4
-                            };
+                        fillPager(res) {
+                            v.table_content = res.items
+                            v.pager.page = res.page
+                            v.pager.total = res.total
                         }
 
                     }

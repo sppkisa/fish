@@ -29,6 +29,21 @@ CREATE TABLE `alarm` (
   `alarm_type` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `alarm` VALUES ('2', '2021-05-03 16:38:03.000000', '16', '1', '东厂水槽', '养鱼池', 'ph过高');
+INSERT INTO `alarm` VALUES ('3', '2021-05-04 16:38:03.000000', '16', '2', '南京', '江宁', '水温过高');
+INSERT INTO `alarm` VALUES ('4', '2021-05-05 16:38:03.000000', '16', '1', '北京', '朝阳', 'ph过低');
+INSERT INTO `alarm` VALUES ('5', '2020-05-03 16:38:03.000000', '16', '3', '深圳', '南山', '溶解氧过低');
+INSERT INTO `alarm` VALUES ('6', '2019-05-03 16:38:03.000000', '16', '2', '上海', '浦东', '水温过低');
+INSERT INTO `alarm` VALUES ('7', '2018-05-03 16:38:03.000000', '16', '1', '苏州', '姑苏', 'ph过高');
+INSERT INTO `alarm` VALUES ('8', '2021-04-03 16:38:03.000000', '16', '2', '无锡', '养鱼池', '水温过低');
+INSERT INTO `alarm` VALUES ('9', '2021-04-13 16:38:03.000000', '16', '1', '常州', '养鱼池', 'ph过低');
+INSERT INTO `alarm` VALUES ('10', '2021-05-13 16:38:03.000000', '16', '4', '镇江', '养鱼池', '气温过高');
+INSERT INTO `alarm` VALUES ('11', '2021-01-03 16:38:03.000000', '16', '1', '广州', '天河', 'ph过高');
+INSERT INTO `alarm` VALUES ('12', '2021-05-04 16:38:03.000000', '16', '1', '扬州', '养鱼池', 'ph过低');
+INSERT INTO `alarm` VALUES ('13', '2021-05-09 16:38:03.000000', '16', '3', '南京', '秦淮', '溶解氧过低');
+INSERT INTO `alarm` VALUES ('14', '2021-07-03 16:38:03.000000', '16', '1', '北京', '东城', 'ph过低');
+INSERT INTO `alarm` VALUES ('15', '2011-05-03 16:38:03.000000', '16', '3', '纽约', '华尔街', '溶解氧过低');
+INSERT INTO `alarm` VALUES ('16', '2020-04-03 16:38:03.000000', '16', '1', '东京', '养鱼池', 'ph过高');
 
 -- ----------------------------
 -- Records of alarm
@@ -130,6 +145,22 @@ CREATE TABLE `sensor_threshold` (
 -- Records of sensor_threshold
 -- ----------------------------
 INSERT INTO `sensor_threshold` VALUES ('1', '1', '30', '10', '小池塘1号', '厂左1', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('2', '2', '35', '13', '小池塘2号', '厂左2', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('3', '2', '40', '24', '小池塘3号', '厂左3', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('4', '3', '7', '11', '小池塘4号', '厂左1', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('5', '4', '25', '20', '小池塘5号', '厂左2', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('6', '2', '31', '12', '小池塘6号', '厂左3', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('7', '1', '32', '11', '小池塘7号', '厂左1', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('8', '3', '30', '10', '小池塘8号', '厂左1', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('9', '1', '22', '12', '电子信息', '厂左3', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('10', '4', '36', '15', '软件工程', '厂左5', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('11', '3', '30', '20', '太平洋', '厂左4', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('12', '1', '30', '4', '大西洋', '厂左2', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('13', '2', '30', '17', '印度洋', '厂左1', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('14', '2', '55', '26', '北冰洋', '厂左4', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('15', '2', '25', '10', '小池塘1号', '厂左3', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('16', '3', '30', '10', '小池塘1号', '厂左2', '20', '15');
+INSERT INTO `sensor_threshold` VALUES ('17', '1', '10', '3', '小池塘1号', '厂左1', '20', '15');
 
 -- ----------------------------
 -- Table structure for user
@@ -150,3 +181,16 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'spp', '123456', '1', '15951078507', 'wechat');
 INSERT INTO `user` VALUES ('2', '张三', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('3', '李四', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('4', '王五', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('5', 'dzy', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('6', 'lili', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('7', 'rose', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('8', 'jack', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('9', 'ly', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('10', '阿三', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('11', '张四', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('12', '张wu', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('13', '张', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('14', 'kkk', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('15', 'lll', 'kaowe174', '2', '15951078507', 'athisnk');
