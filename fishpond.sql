@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80018
 File Encoding         : 65001
 
-Date: 2021-05-06 15:45:01
+Date: 2021-05-09 18:41:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,7 +28,11 @@ CREATE TABLE `alarm` (
   `pond_name` varchar(20) NOT NULL,
   `alarm_type` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of alarm
+-- ----------------------------
 INSERT INTO `alarm` VALUES ('2', '2021-05-03 16:38:03.000000', '16', '1', '东厂水槽', '养鱼池', 'ph过高');
 INSERT INTO `alarm` VALUES ('3', '2021-05-04 16:38:03.000000', '16', '2', '南京', '江宁', '水温过高');
 INSERT INTO `alarm` VALUES ('4', '2021-05-05 16:38:03.000000', '16', '1', '北京', '朝阳', 'ph过低');
@@ -44,10 +48,6 @@ INSERT INTO `alarm` VALUES ('13', '2021-05-09 16:38:03.000000', '16', '3', '南�
 INSERT INTO `alarm` VALUES ('14', '2021-07-03 16:38:03.000000', '16', '1', '北京', '东城', 'ph过低');
 INSERT INTO `alarm` VALUES ('15', '2011-05-03 16:38:03.000000', '16', '3', '纽约', '华尔街', '溶解氧过低');
 INSERT INTO `alarm` VALUES ('16', '2020-04-03 16:38:03.000000', '16', '1', '东京', '养鱼池', 'ph过高');
-
--- ----------------------------
--- Records of alarm
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for calendar
@@ -139,7 +139,7 @@ CREATE TABLE `sensor_threshold` (
   `max2` float NOT NULL,
   `min2` float NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sensor_threshold
@@ -169,12 +169,12 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(20) NOT NULL,
-  `user_password` varchar(20) NOT NULL,
+  `user_password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `user_type` int(11) NOT NULL,
   `user_phone` varchar(11) DEFAULT NULL,
   `user_wechat` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
@@ -194,3 +194,5 @@ INSERT INTO `user` VALUES ('12', '张wu', 'kaowe174', '2', '15951078507', 'athis
 INSERT INTO `user` VALUES ('13', '张', 'kaowe174', '2', '15951078507', 'athisnk');
 INSERT INTO `user` VALUES ('14', 'kkk', 'kaowe174', '2', '15951078507', 'athisnk');
 INSERT INTO `user` VALUES ('15', 'lll', 'kaowe174', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('16', '邵朋朋', 'pbkdf2:sha256:150000$zjAtWRkd$09214aadea84da0cc0f1569d2f63b3480e78d331f39ff80e94d1115e6d646d90', '2', '15951078507', 'athisnk');
+INSERT INTO `user` VALUES ('17', '邵朋朋2', 'pbkdf2:sha256:150000$a5KPqAju$801ef5acde050b9f6498cda981677bf2d89fbdc36bb6e7aea0c71ac3bf14ab11', '1', '15951078507', 'athisnk');
