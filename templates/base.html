@@ -33,32 +33,29 @@
 <body style='overflow-y:hidden !important;overflow-x:hidden'>
 <div id="cm-menu">
     <nav class="cm-navbar cm-navbar-primary">
-        <div class="cm-flex"><a href="/index" class="cm-logo"></a></div>
+        <div class="cm-flex"><a href="/dashboard" class="cm-logo"></a></div>
     </nav>
     <div id="cm-menu-content">
         <div id="cm-menu-items-wrapper">
             <div id="cm-menu-scroller">
                 <ul class="cm-menu-items">
-                    <li class="active"><a href="/index" class="sf-house">首页</a></li>
+                    <li class="active"><a href="/dashboard" class="sf-house">首页</a></li>
                     <li><a href="/dashboard" class="sf-dashboard">环境数据监测</a></li>
                     <li><a href="/pond" class="sf-lock-open">鱼塘管理</a></li>
-                    <li><a href="/device" class="sf-brick">设备智能控制</a></li>
-                    <li class="cm-submenu">
-                        <a class="sf-window-layout" data-toggle="dropdown">报警记录查询<span class="caret"></span></a>
-                        <ul class="cm-1-navbar">
-                            <li><a href="/sensor_threshold">阈值设置情况</a></li>
-                            <li><a href="/alarm">历史报警记录</a></li>
-                        </ul>
-                    </li>
-{#                    <li class="cm-submenu">#}
-{#                        <a class="sf-cat" data-toggle="dropdown">养鱼流程管理 <span class="caret"></span></a>#}
-{#                        <ul class="cm-1-navbar">#}
-{#                            <li><a href="ico-sf.html">Small-n-flat</a></li>#}
-{#                            <li><a href="ico-md.html">Material Design</a></li>#}
-{#                            <li><a href="ico-fa.html">Font Awesome</a></li>#}
-{#                        </ul>#}
-{#                    </li>#}
-                    <li><a href="/user" class="sf-notepad">用户信息管理</a></li>
+                    <li><a href="/device" class="sf-safe">设备智能控制</a></li>
+
+                    <li><a href="/sensor_threshold" class="sf-mixer">报警阈值控制</a></li>
+                    <li><a href="/alarm" class="sf-shield-warning">历史报警记录</a></li>
+
+                    {#                    <li class="cm-submenu">#}
+                    {#                        <a class="sf-cat" data-toggle="dropdown">养鱼流程管理 <span class="caret"></span></a>#}
+                    {#                        <ul class="cm-1-navbar">#}
+                    {#                            <li><a href="ico-sf.html">Small-n-flat</a></li>#}
+                    {#                            <li><a href="ico-md.html">Material Design</a></li>#}
+                    {#                            <li><a href="ico-fa.html">Font Awesome</a></li>#}
+                    {#                        </ul>#}
+                    {#                    </li>#}
+                    <li><a href="/user" class="sf-user-id">用户信息管理</a></li>
                 </ul>
             </div>
         </div>
@@ -67,18 +64,12 @@
 <header id="cm-header">
     <nav class="cm-navbar cm-navbar-primary">
         <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
-        <div class="cm-flex">
+        <div class="cm-flex" style="width: 60%">
             <h1>智慧渔业</h1>
-            <form id="cm-search" action="index.html" method="get">
-                <input type="search" name="q" autocomplete="off" placeholder="Search...">
-            </form>
-        </div>
-        <div class="pull-right">
-            <div id="cm-search-btn" class="btn btn-primary md-search-white" data-toggle="cm-search"></div>
         </div>
         <div class="dropdown pull-right">
-            <button class="btn btn-primary md-notifications-white" data-toggle="dropdown"><span
-                    class="label label-danger">23</span></button>
+
+            <button class="btn btn-primary md-notifications-white" data-toggle="dropdown"></button>
             <div class="popover cm-popover bottom">
                 <div class="arrow"></div>
                 <div class="popover-content">
@@ -112,7 +103,7 @@
             <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
             <ul class="dropdown-menu">
                 <li class="disabled text-center">
-                    <a style="cursor:default;"><strong>John Smith</strong></a>
+                    <a style="cursor:default;"><strong>邵朋朋</strong></a>
                 </li>
                 <li class="divider"></li>
                 <li>
@@ -122,7 +113,7 @@
                     <a href="#"><i class="fa fa-fw fa-cog"></i> Settings</a>
                 </li>
                 <li>
-                    <a href="login.html"><i class="fa fa-fw fa-sign-out"></i> Sign out</a>
+                    <a href="/logout"><i class="fa fa-fw fa-sign-out"></i> 退出登陆</a>
                 </li>
             </ul>
         </div>
@@ -130,6 +121,7 @@
 </header>
 
 {% block content %}
+
 {% endblock %}
 </body>
 </html>

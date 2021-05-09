@@ -1,8 +1,16 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask_login import current_user, login_required
 from sqlalchemy import and_
 from model.model import Device, Pond, add, delete, commit, User, Sensor_threshold, Alarm
 
 alarm = Blueprint('alarm', __name__)
+
+
+@alarm.before_request
+@login_required
+def before_request():
+    if current_user.is_authenticated is False:
+        return redirect(url_for('common.login'))
 
 
 @alarm.route('/alarm')
@@ -26,7 +34,9 @@ def save_alarm():
     alarm_type = request.form.get('alarm_type')
 
     if id:
-        Alarm.query.filter(Alarm.id == id).update({'col_time': col_time, 'col_value': col_value, 'sensor_type': sensor_type, 'area': area, 'pond_name': pond_name, 'alarm_type': alarm_type})
+        Alarm.query.filter(Alarm.id == id).update(
+            {'col_time': col_time, 'col_value': col_value, 'sensor_type': sensor_type, 'area': area,
+             'pond_name': pond_name, 'alarm_type': alarm_type})
         commit()
     else:
         alarm = Alarm(col_time, col_value, sensor_type, area, pond_name, alarm_type)

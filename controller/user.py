@@ -1,9 +1,18 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask_login import login_required, current_user
 from sqlalchemy import and_
+from werkzeug.security import generate_password_hash
 
 from model.model import Device, Pond, add, delete, commit, User
 
 user = Blueprint('user', __name__)
+
+
+@user.before_request
+@login_required
+def before_request():
+    if current_user.is_authenticated is False:
+        return redirect(url_for('common.login'))
 
 
 @user.route('/user')
@@ -20,13 +29,15 @@ def save_user():
         page = int(request.values.get('page'))
     id = request.form.get('id')
     name = request.form.get('name')
-    password = request.form.get('password')
+    password = generate_password_hash(request.form.get('password'))
     type = request.form.get('type')
     phone = request.form.get('phone')
     wechat = request.form.get('wechat')
 
     if id:
-        User.query.filter(User.user_id == id).update({'user_name': name, 'user_password': password, 'user_type': type, 'user_phone': phone, 'user_wechat': wechat})
+        User.query.filter(User.user_id == id).update(
+            {'user_name': name, 'user_password': password, 'user_type': type, 'user_phone': phone,
+             'user_wechat': wechat})
         commit()
     else:
         user = User(name, password, type, phone, wechat)

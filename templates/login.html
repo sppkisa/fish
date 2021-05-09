@@ -8,43 +8,53 @@
     <link rel="stylesheet" type="text/css" href="../static/assets/css/small-n-flat.css">
     <link rel="stylesheet" type="text/css" href="../static/assets/css/font-awesome.min.css">
 
-    <title>养鱼-{% block title %}{% endblock %}</title>
+    <title>养鱼-登陆</title>
 
 </head>
 <body class="cm-login">
+<div style="height:100%;background-image:url('../static/assets/img/login-bg.png');z-index: -1">
 
-<div class="text-center" style="padding:90px 0 30px 0;background:#fff;border-bottom:1px solid #ddd">
-    <img src="../static/assets/img/logo-big.svg" width="300" height="45">
-    <h2 style="color: darkkhaki">养鱼系统</h2>
-</div>
-
-<div class="col-sm-6 col-md-4 col-lg-3" style="margin:40px auto; float:none;">
-    <form method="post" action="/index">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
-                    <input type="text" name="username" class="form-control" placeholder="Username">
+    <div class="text-center" style="padding:90px 0 30px 0;">
+        <img src="../static/assets/img/logo-big.svg" width="300" height="45">
+        <h2 style="color: darkkhaki">智慧渔业-养鱼系统</h2>
+    </div>
+    <div class="col-sm-6 col-md-4 col-lg-3" style="margin:40px auto; float:none;">
+        <form method="post" action="/index">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
+                        <input type="text" name="username" class="form-control" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"><i class="fa fa-fw fa-lock"></i></div>
+                        <input type="password" name="password" class="form-control" placeholder="密码">
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-fw fa-lock"></i></div>
-                    <input type="password" name="password" class="form-control" placeholder="Password">
-                </div>
+            <div class="col-xs-6">
+                <div class="checkbox"><label style="color: #a0cfff"><input type="checkbox">记住我</label></div>
             </div>
-        </div>
-        <div class="col-xs-6">
-            <div class="checkbox"><label><input type="checkbox"> Remember me</label></div>
-        </div>
-        <div class="col-xs-6">
-            <button type="submit" class="btn btn-block btn-primary" >Sign in</button>
-        </div>
-
-    </form>
-
+            <div class="col-xs-6">
+                <input type="submit" class="btn btn-block btn-primary" value="Log in">
+            </div>
+            <div class="col-xs-12">
+                <span id="tips"></span>
+                {% for message in get_flashed_messages() %}
+                    <span style="text-align: center;color: red">{{ message }}</span>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
 </div>
-<script src="../static/assets/js/lib/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    })
+</script>
+<script src="../static/assets/js/lib/jquery.js"></script>
 <script src="../static/assets/js/jquery.mousewheel.min.js"></script>
 <script src="../static/assets/js/jquery.cookie.min.js"></script>
 <script src="../static/assets/js/fastclick.min.js"></script>

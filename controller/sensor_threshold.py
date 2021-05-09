@@ -1,8 +1,16 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask_login import login_required, current_user
 from sqlalchemy import and_
 from model.model import Device, Pond, add, delete, commit, User, Sensor_threshold
 
 sensor_threshold = Blueprint('sensor_threshold', __name__)
+
+
+@sensor_threshold.before_request
+@login_required
+def before_request():
+    if current_user.is_authenticated is False:
+        return redirect(url_for('common.login'))
 
 
 @sensor_threshold.route('/sensor_threshold')
@@ -27,7 +35,9 @@ def save_sensor_threshold():
     min2 = request.form.get('min2')
 
     if id:
-        Sensor_threshold.query.filter(Sensor_threshold.id == id).update({'type': type, 'max1': max1, 'min1': min1, 'pond_name': pond_name, 'area_name': area_name, 'max2': max2, 'min2': min2})
+        Sensor_threshold.query.filter(Sensor_threshold.id == id).update(
+            {'type': type, 'max1': max1, 'min1': min1, 'pond_name': pond_name, 'area_name': area_name, 'max2': max2,
+             'min2': min2})
         commit()
     else:
         sensor_threshold = Sensor_threshold(type, max1, min1, pond_name, area_name, max2, min2)

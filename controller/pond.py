@@ -1,9 +1,18 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask_login import login_required, current_user
 from sqlalchemy import and_
 
 from model.model import Device, Pond, add, delete, commit
 
 pond = Blueprint('pond', __name__)
+
+
+# 设置切点，在请求该蓝图的url之前，判断是否已登录
+@pond.before_request
+@login_required
+def before_request():
+    if current_user.is_authenticated is False:
+        return redirect(url_for('common.login'))
 
 
 @pond.route('/pond')
