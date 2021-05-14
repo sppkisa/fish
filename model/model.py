@@ -92,6 +92,7 @@ class User(db.Model, UserMixin):
 
     def verify_password(self, password):
         """密码hash验证"""
+        #generate_password_hash
         return check_password_hash(self.user_password, password)
 
     def get_id(self):
@@ -187,4 +188,48 @@ class Alarm(db.Model):
             "area": self.area,
             "pond_name": self.pond_name,
             "alarm_type": self.alarm_type
+        }
+
+
+class Calendar(db.Model):
+    def __init__(self, time, food, pond_id, vaccine, clean_water, add_fish, kill_insect, disinfect, other, user_id):
+        self.time = time
+        self.food = food
+        self.pond_id = pond_id
+        self.vaccine = vaccine
+        self.clean_water = clean_water
+        self.add_fish = add_fish
+        self.kill_insect = kill_insect
+        self.disinfect = disinfect
+        self.other = other
+        self.user_id = user_id
+
+    #定义表名
+    __tablename__ = 'calendar'
+    #定义字段
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    time = db.Column(db.Date)
+    food = db.Column(db.Integer)
+    pond_id = db.Column(db.Integer)
+    vaccine = db.Column(db.Integer)
+    clean_water = db.Column(db.Integer)
+    add_fish = db.Column(db.Integer)
+    kill_insect = db.Column(db.Integer)
+    disinfect = db.Column(db.Integer)
+    other = db.Column(db.Text)
+    user_id = db.Column(db.Integer)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "time": self.time,
+            "food": self.food,
+            "pond_id": self.pond_id,
+            "vaccine": self.vaccine,
+            "clean_water": self.clean_water,
+            "add_fish": self.add_fish,
+            "kill_insect": self.kill_insect,
+            "disinfect": self.disinfect,
+            "other": self.other,
+            "user_id": self.user_id
         }

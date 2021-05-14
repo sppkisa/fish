@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}养鱼日历{% endblock %}
+{% block content %}
+     <div id="calendar_fill">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                养鱼环境数据
+                            </h2>
+                            <hr/>
+                            <div id="app">
+                                    <el-calendar>
+                                        <template
+                                                slot="dateCell"
+                                                slot-scope="{date, data}">
+                                            <div :class="data.isSelected ? 'is-selected' : ''" @click="calClick(data)">
+                                                 {[ data.day.split('-').slice(1).join('-') ]}
+                                                <div v-show="data.isSelected == true" v-on:click="add_calendar">点击添加日志</div>
+                                            </div>
+
+                                        </template>
+
+                                    </el-calendar>
+                                    <el-dialog
+                                            :title="date"
+                                            width="30%"
+                                            append-to-body
+                                            :visible.sync="open">
+                                            <div class='select_pond'>
+                                            <el-select name="pond_id" v-model="value" placeholder="选择池溏" style="width: 30%">
+                                                <el-option
+                                                        v-for="item in options"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                            </div>
+                                            <br/>
+                                            <el-checkbox-group v-model="checkList" name="operation">
+                                                <el-checkbox name="operation" value="food" label="food">{{'投食'}}</el-checkbox>
+                                                <el-checkbox name="operation" value="add_fish" label="add_fish">{{'投鱼'}}</el-checkbox>
+                                                <el-checkbox name="operation" value="disinfect" label="disinfect">{{'消毒'}}</el-checkbox>
+                                                <el-checkbox name="operation" value="clean_water" label="clean_water">{{'换水'}}</el-checkbox>
+                                                <el-checkbox name="operation" value="vaccine" label="vaccine">{{'疫苗'}}</el-checkbox>
+                                                <el-checkbox name="operation" value="kill_insect" label="kill_insect">{{'杀虫'}}</el-checkbox>
+                                            </el-checkbox-group>
+                                            <br/>
+                                            <div>备注信息</div>
+                                            <el-input name="other" type="textarea" :rows="4" placeholder="请输入内容" v-model="textarea"></el-input>
+                                            <span slot="footer" class="dialog-footer">
+                                                <el-button @click="submit_calendar">提交</el-button>
+                                                <el-button type="primary" @click="cancel">取消</el-button>
+                                            </span>
+                                    </el-dialog>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+    <script type="text/javascript">
+
+        var v = new Vue({
+            el: '#calendar_fill',
+            data: {
+            open: false,
+            date: '',
+            checkList: [],
+            textarea: '',
+            options: [{
+                value: '1',
+                label: '1号池塘'
+            }, {
+                value: '2',
+                label: '2号池塘'
+            }, {
+                value: '3',
+                label: '3号池塘'
+            }, {
+                value: '4',
+                label: '4号池塘'
+            }, {
+                value: '5',
+                label: '5号池塘'
+            }],
+            value: ''
+        },
+        delimiters: ['{[', ']}'],
+        methods: {
+            add_calendar: function(){
+                this.open = true;
+            },
+            submit_calendar: function () {
+                $.post('/submit_calendar',
+                    {
+                        'time': this.date,
+                        'pond_id': this.value,
+                        'operation': this.checkList.toString(),
+                        'other': this.textarea
+                    }),
+                    console.log(this.checkList)
+                    this.open = false
+            },
+            cancel: function () {
+                this.open = false;
+            },
+            calClick: function (data) {
+                this.date = data.day;
+            }
+        }
+        });
+    </script>
+<style type="text/css">
+        .is-selected {
+            color: blue;
+        }
+</style>
+
+{% endblock %}

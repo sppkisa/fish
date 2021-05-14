@@ -10,6 +10,7 @@ from controller.dashboard import dashboard
 from controller.user import user
 from controller.sensor_threshold import sensor_threshold
 from controller.alarm import alarm
+from controller.calendar import calendar
 
 # 注册路由表
 app.register_blueprint(common)
@@ -19,6 +20,7 @@ app.register_blueprint(dashboard)
 app.register_blueprint(user)
 app.register_blueprint(sensor_threshold)
 app.register_blueprint(alarm)
+app.register_blueprint(calendar)
 # jinja2模版渲染热更新设置
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
