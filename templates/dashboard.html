@@ -1,101 +1,157 @@
 {% extends "base.html" %}
 {% block title %}鱼塘管理{% endblock %}
-{% block user_name %}{{user_name}}{% endblock %}
+{% block user_name %}{{ user_name }}{% endblock %}
 {% block content %}
-    <div id="global">
-        <div class="container-fluid">
-            <div class="row">
+    <div id="dashboard">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
 
-                <div class="panel panel-default">
-                    <div class="panel-body puman">
-                        <h2>
-                            实时监测
-                        </h2>
-                        <hr/>
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                实时监测
+                            </h2>
+                            <hr/>
+                            传感器：
+                            <el-select v-model="sensor" placeholder="请选择" @change="change_sensor">
+                                <el-option
+                                        v-for="item in options_sensor"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            &nbsp;&nbsp;图表刷新频率：
+                            <el-select v-model="freq" placeholder="请选择" @change="change_freq">
+                                <el-option
+                                        v-for="item in options_freq"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            <div id="c2" style="width: 100%;height:400px;"></div>
 
-                        <div id="c2" style="width: 100%;height:400px;"></div>
-                        <div id="c1" style="width: 100%;height:400px;"></div>
+                            <div id="c1" style="width: 100%;height:400px;">
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script type="text/javascript">
+        let set1 = setInterval(freq, 1000);
+        let data = [];
+        var v = new Vue({
+            el: '#dashboard',
+            data: {
+                options_sensor: [{
+                    value: 2,
+                    label: '温度'
+                }, {
+                    value: 11,
+                    label: 'PH'
+                }, {
+                    value: 5,
+                    label: '氨氮'
+                }, {
+                    value: 18,
+                    label: '溶解氧'
+                }, {
+                    value: 24,
+                    label: '电导率'
+                }],
+                options_freq: [{
+                    value: 0.1,
+                    label: '0.1'
+                }, {
+                    value: 0.2,
+                    label: '0.2'
+                }, {
+                    value: 1,
+                    label: '1'
+                }, {
+                    value: 2,
+                    label: '2'
+                }, {
+                    value: 5,
+                    label: '5'
+                }, {
+                    value: 10,
+                    label: '10'
+                }],
+                sensor: '温度',
+                freq: '1'
+            },
+            delimiters: ['((', '))'],
+            methods: {
+                change_sensor: function () {
+                    console.log(this.sensor)
+                    {#图表清空#}
+                    data = []
+                    clearInterval(set1)
+                    set1 = setInterval(freq, 1000 / this.freq)
+                },
+                change_freq: function () {
+                    clearInterval(set1)
+                    set1 = setInterval(freq, 1000 / this.freq)
+                },
+            }
+        });
         let myChart = echarts.init(document.getElementById('c1'));
         let ROOT_PATH = 'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples';
 
         let myChart2 = echarts.init(document.getElementById('c2'));
-        let option1;
-        option1 = {
-            title: {
-                text: '折线图堆叠'
-            },
+        let option1 = {
             tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                trigger: 'axis',
+                formatter: function (params) {
+                    params = params[0];
+                    let date = new Date(params.name);
+                    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                },
+                axisPointer: {
+                    animation: false
+                }
             },
             grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
+                left: '5%',
+                right: '15%',
             },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
+            title: {
+                text: '动态实时数据流'
             },
             xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                type: 'time',
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                boundaryGap: [0, '10%'],
+                scale:true
             },
-            series: [
-                {
-                    name: '邮件营销',
-                    type: 'line',
-                    stack: '总量',
-                    data: [120, 132, 101, 134, 90, 230, 210]
-                },
-                {
-                    name: '联盟广告',
-                    type: 'line',
-                    stack: '总量',
-                    data: [220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name: '视频广告',
-                    type: 'line',
-                    stack: '总量',
-                    data: [150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name: '直接访问',
-                    type: 'line',
-                    stack: '总量',
-                    data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: '搜索引擎',
-                    type: 'line',
-                    stack: '总量',
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
-                }
-            ]
+            series: [{
+                name: '模拟数据',
+                type: 'line',
+                smooth: true,
+                showSymbol: false,
+                hoverAnimation: false,
+                data: data
+            }]
         };
+
         $(document).ready(function () {
-            myChart.setOption(option1);
+            myChart.setOption(option1)
             $.get(ROOT_PATH + '/data/asset/data/aqi-beijing.json', function (data) {
                 myChart2.setOption(
                     option = {
                         title: {
-                            text: 'Beijing AQI',
-                            left: '1%'
+                            text: '异常指标',
+                            top: '2%'
                         },
                         tooltip: {
                             trigger: 'axis'
@@ -184,6 +240,29 @@
                     });
             });
         });
+
+        function freq() {
+            $.post('/redraw', {
+                    'sensor': v.sensor === '温度' ? 2 : v.sensor,
+                },
+                function (res) {
+                    res.forEach(function (item) {
+                        {# 变换形式 '2018-01-01 00:00:00'  -> 2018/01/01 00:00:00#}
+                        let _value = [item.name.replace(/-/g, "/"), parseFloat(item.value)]
+                        let last = {name: item.name.replace(/-/g, "/"), value: _value}
+                        if (data.length > 500)
+                            data.shift()
+                        data.push(last)
+                    })
+                    myChart.setOption({
+                        series: [{
+                            data: data
+                        }]
+                    });
+                })
+        }
+
+
     </script>
 
 {% endblock %}
