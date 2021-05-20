@@ -20,11 +20,13 @@ t_env.get_config().get_configuration().set_string(
     "parallelism.default", "1")
 
 t_env.get_config().get_configuration().set_boolean("python.fn-execution.memory.managed", True)
+# flink的python环境 运行时调用java代码需要导入jar包
 t_env.get_config().get_configuration().set_string("pipeline.jars",
                                                   "file:\\D:\\PPPCUT\\flink-connector-kafka_2.12-1.12.0.jar;file:\\D:\\PPPCUT\\flink-csv-1.12.0.jar;file:\\D:\\Repo\\org\\apache\\kafka\\kafka-clients\\1.0.0\\kafka-clients-1.0.0.jar")
 
 train_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
 source_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
+# 这现在用不到 只创建这个目录 具体生成的文件名flink会自定义
 result_data_path = "D:\\PPPCUT\\color.csv"
 
 X_train = pd.read_csv(train_data_path,
@@ -73,7 +75,6 @@ class myThread(threading.Thread):
         print("开启线程： " + self.name)
         consumer = KafkaConsumer('water',
                                  bootstrap_servers=['121.196.54.227:9092'])
-        print("????")
         for message in consumer:
             # message.value的字节形式：['b\'1','2018-01-01 00:00:00','6.93','9.03',....,'0\'']
             curr = {'name': str(message.value).split(',')[1],
