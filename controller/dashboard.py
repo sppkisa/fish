@@ -22,10 +22,13 @@ t_env.get_config().get_configuration().set_string(
 t_env.get_config().get_configuration().set_boolean("python.fn-execution.memory.managed", True)
 # flink的python环境 运行时调用java代码需要导入jar包
 t_env.get_config().get_configuration().set_string("pipeline.jars",
-                                                  "file:\\D:\\PPPCUT\\flink-connector-kafka_2.12-1.12.0.jar;file:\\D:\\PPPCUT\\flink-csv-1.12.0.jar;file:\\D:\\Repo\\org\\apache\\kafka\\kafka-clients\\1.0.0\\kafka-clients-1.0.0.jar")
+                                                  # "file:\\D:\\PPPCUT\\flink-connector-kafka_2.12-1.12.0.jar;file:\\D:\\PPPCUT\\flink-csv-1.12.0.jar;file:\\D:\\Repo\\org\\apache\\kafka\\kafka-clients\\1.0.0\\kafka-clients-1.0.0.jar")
+                                                  "file:../files/flink-connector-kafka_2.12-1.12.0.jar;file:../files/flink-csv-1.12.0.jar;file:../files/kafka-clients-1.0.0.jar")
 
-train_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
-source_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
+# train_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
+# source_data_path = "C:\\Users\\sankoo\\Desktop\\lunwen\\heihe_lxyc_20_10.csv"
+train_data_path = "files/heihe_lxyc_20_10.csv"
+source_data_path = "files/heihe_lxyc_20_10.csv"
 # 这现在用不到 只创建这个目录 具体生成的文件名flink会自定义
 result_data_path = "D:\\PPPCUT\\color.csv"
 
