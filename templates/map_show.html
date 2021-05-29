@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}鱼塘分布{% endblock %}
+{% block user_name %}{{ user_name }}{% endblock %}
+{% block content %}
+<div id="pond_map">
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="panel panel-default">
+                        <div class="panel-body puman">
+                            <h2>
+                                鱼塘分布
+                            </h2>
+                            <hr/>
+                            <div id="map_show" style="height: 800px;width: 1400px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let myChart = echarts.init(document.getElementById('map_show'));
+        let option = {
+                series: [{
+                type: 'treemap',
+                data: [{
+                    name: '片区一',            // First tree
+                    value: 30,
+                    children: [{
+                        name: '片区一-1号池溏',       // First leaf of first tree
+                        value: 7,
+                        children: [{
+                                    name: '片区一-1号池溏-水域一',
+                                    value: 4
+                        },         {
+                                    name: '片区一-1号池溏-水域二',
+                                    value: 3
+
+                        }]
+                    }, {
+                        name: '片区一-2号池溏',       // Second leaf of first tree
+                        value: 7,
+                        children: [{
+                                    name: '片区一-2号池溏-水域一',
+                                    value: 5
+                        },         {
+                                    name: '片区一-2号池溏-水域二',
+                                    value: 2
+                        }]
+                    }, {
+                        name: '片区一-3号池溏',       // Third leaf of first tree
+                        value: 6,
+                        children: [{
+                                    name: '片区一-3号池溏-水域一',
+                                    value: 3
+                        },         {
+                                    name: '片区一-3号池溏-水域二',
+                                    value: 3
+                        }]
+                    },  {
+                        name: '片区一-4号池溏',       // Fourth leaf of first tree
+                        value: 5,
+                        children: [{
+                                    name: '片区一-4号池溏-水域一',
+                                    value: 2
+                        },         {
+                                    name: '片区一-4号池溏-水域二',
+                                    value: 3
+                        }]
+                    },  {
+                        name: '片区一-5号池溏',       // Fifth leaf of first tree
+                        value: 5,
+                        children: [{
+                                    name: '片区一-5号池溏-水域一',
+                                    value: 1
+                        },         {
+                                    name: '片区一-5号池溏-水域二',
+                                    value: 2
+                        },         {
+                                    name: '片区一-5号池溏-水域三',
+                                    value: 2
+                        }]
+                    }]
+                }, {
+                    name: '片区二',            // Second tree
+                    value: 20,
+                    children: [{
+                        name: '片区二-6号池溏',       // Son of first tree
+                        value: 9,
+                        children: [{
+                            name: '片区二-6号池溏-水域一',  // Granson of first tree
+                            value: 6
+                        },         {
+                            name: '片区二-6号池溏-水域二',
+                            value: 3
+                        }]
+                    },         {
+                        name: '片区二-7号池溏',
+                        value: 11,
+                        children: [{
+                            name: '片区二-7号池溏-水域一',
+                            value: 4
+                        },         {
+                            name: '片区二-7号池溏-水域二',
+                            value: 7
+                        }]
+                    }]
+                }]
+            }]
+        }
+        option && myChart.setOption(option);
+    </script>
+{% endblock %}
